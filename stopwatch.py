@@ -18,11 +18,16 @@ def pause():
     btn_start.grid(row=1, column=0, pady=10)
 
 def reset():
-    global is_run
-    is_run = False
+    global is_run, miliseconds
     lbl_stopwatch.after_cancel(update)
-    btn_start.configure(state=NORMAL)
+    miliseconds = 0
+    lbl_stopwatch.configure(text='00:00:00')
+    if is_run:
+        btn_pause.grid_forget()
+        btn_start.grid(row=1, column=0, pady=10)
     btn_reset.configure(state=DISABLED)
+    is_run = False
+
 
 def update():
     global minutes, seconds, miliseconds
