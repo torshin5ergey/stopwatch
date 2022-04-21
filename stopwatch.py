@@ -7,8 +7,6 @@ def start():
     btn_start.grid_forget()
     btn_pause.grid(row=1, column=0, pady=10)
     btn_reset.configure(state=NORMAL)
-    #btn_start.configure(state=tk.DISABLED)
-    #btn_reset.configure(state=tk.NORMAL)
 
 def pause():
     global is_run
@@ -18,16 +16,15 @@ def pause():
     btn_start.grid(row=1, column=0, pady=10)
 
 def reset():
-    global is_run, miliseconds
+    global is_run, minutes, seconds, miliseconds
     lbl_stopwatch.after_cancel(update)
-    miliseconds = 0
+    minutes, seconds, miliseconds = 0, 0, 0
     lbl_stopwatch.configure(text='00:00:00')
     if is_run:
         btn_pause.grid_forget()
         btn_start.grid(row=1, column=0, pady=10)
     btn_reset.configure(state=DISABLED)
     is_run = False
-
 
 def update():
     global minutes, seconds, miliseconds
@@ -56,15 +53,18 @@ app_font2 = 'Verdana 24'
 root = Tk()
 root.title('Stopwatch')
 
+#
 frame_time = Frame(root)
 frame_time.grid(row=0, column=0)
-frame_buttons = Frame(root)
-frame_buttons.grid(row=1, column=0)
 
 lbl_stopwatch = Label(frame_time,
                     text='00:00:00',
                     font=app_font1)
 lbl_stopwatch.grid(row=0, column=0)
+
+#
+frame_buttons = Frame(root)
+frame_buttons.grid(row=1, column=0)
 
 btn_start = Button(frame_buttons,
                 text='Start',
