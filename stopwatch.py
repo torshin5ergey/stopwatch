@@ -7,7 +7,7 @@ from tkinter import *
 
 # Create variables
 is_run = False
-minutes, seconds, miliseconds = 0, 0, 0
+hours, minutes, seconds = 0, 0, 0
 
 # App fonts and background color
 app_font1 = 'Arial 72 bold'
@@ -39,10 +39,10 @@ def pause():
 
 # Reset stopwatch
 def reset():
-    global is_run, minutes, seconds, miliseconds
+    global is_run, hours, minutes, seconds
     lbl_stopwatch.after_cancel(update)
-    minutes, seconds, miliseconds = 0, 0, 0
-    lbl_stopwatch.configure(text='00:00,00')
+    hours, minutes, seconds = 0, 0, 0
+    lbl_stopwatch.configure(text='00:00:00')
     if is_run:
         btn_pause.grid_forget()
         btn_start.grid(row=1, column=0, pady=10)
@@ -52,55 +52,51 @@ def reset():
 
 # Update stopwatch
 def update():
-    global minutes, seconds, miliseconds
+    global hours, minutes, seconds
     #print(running)
     if is_run:
-        if miliseconds > 999:
-            seconds += 1
-            miliseconds = 0
         if seconds > 59:
             minutes += 1
             seconds = 0
+        if minutes > 59:
+            hours += 1
+            minutes = 0
         # Create string valuet for min, sec and ms
-        str_miliseconds = '0' + str(int(miliseconds/10)) if (miliseconds/10 < 10) else str(int(miliseconds/10))
         str_seconds = '0' + str(seconds) if (seconds < 10) else str(seconds)
         str_minutes = '0' + str(minutes) if (minutes < 10) else str(minutes)
-        new_lbl_text = str_minutes + ':' + str_seconds + ',' + str_miliseconds
+        str_hours = '0' + str(hours) if (hours < 10) else str(hours)
+        new_lbl_text = str_hours + ':' + str_minutes + ':' + str_seconds
         lbl_stopwatch.configure(text=new_lbl_text)
-        #every 20 miliseconds
-        miliseconds += 100
+        # Update every second
         #time.sleep(0.001)
-        lbl_stopwatch.after(100, update)
+        lbl_stopwatch.after(1000, update)
         update_canvas()
+        seconds += 1
 
 def canvas_idle_state():
-    global arc_miliseconds,arc_seconds,arc_minutes,circle_toplevel
     cnv.delete("all")
-    arc_miliseconds = cnv.create_arc(10,10,490,490, start=90, extent=-359.9,
-                                outline='#ecdefa', fill='#ecdefa')
+    oval_outer = cnv.create_oval(15,15,485,485, width=2, outline='#A06CD5', fill=app_bg)
+    oval_inner = cnv.create_oval(30,30,470,470, width=2, outline='#A06CD5', fill=app_bg)
     arc_seconds = cnv.create_arc(15,15,485,485, start=90, extent=-359.9,
                                 outline='#A06CD5', fill='#A06CD5')
-    arc_minutes = cnv.create_arc(20,20,480,480, start=90, extent=-359.9,
-                                outline='#6247AA', fill='#6247AA')
     circle_toplevel = cnv.create_oval(30,30,470,470, outline=app_bg, fill=app_bg)
     cnv.create_window(250,250, window=lbl_stopwatch)
 
 # Animate Tkinter Canvas (stopwatch circles)
 def update_canvas():
-    global arc_miliseconds,arc_seconds,arc_minutes,circle_toplevel,miliseconds
+    global seconds
     cnv.delete("all")
     #print(miliseconds)
-    ms_end = map_values(miliseconds, 0, 1000, 0, -359)
-    s_end = map_values(seconds, 0, 60, 0, -359) - miliseconds/180
-    m_end = map_values(minutes, 0, 60, 0, -359) - seconds/10
+    #ms_end = map_values(miliseconds, 0, 1000, 0, -359)
+    s_end = map_values(seconds, 0, 60, 0, -360)
     #print(ms_end, s_end, ms_end)
-    arc_miliseconds = cnv.create_arc(10,10,490,490, start=90, extent=ms_end,
-                                outline='#ecdefa', fill='#ecdefa')
+    #arc_miliseconds = cnv.create_arc(10,10,490,490, start=90, extent=ms_end,
+                                #outline='#ecdefa', fill='#ecdefa')
+    oval_outer = cnv.create_oval(15,15,485,485, width=2, outline='#A06CD5', fill=app_bg)
+    oval_inner = cnv.create_oval(30,30,470,470, width=2, outline='#A06CD5', fill=app_bg)
     arc_seconds = cnv.create_arc(15,15,485,485, start=90, extent=s_end,
                                 outline='#A06CD5', fill='#A06CD5')
-    arc_minutes = cnv.create_arc(20,20,480,480, start=90, extent=m_end,
-                                outline='#6247AA', fill='#6247AA')
-    circle_toplevel = cnv.create_oval(30,30,470,470, outline=app_bg, fill=app_bg)
+    circle_toplevel = cnv.create_oval(31,31,469,469, outline=app_bg, fill=app_bg)
     cnv.create_window(250,250, window=lbl_stopwatch)
 
 # Create 'root' app window
@@ -123,7 +119,7 @@ cnv = Canvas(main_frame, bg=app_bg, width=500, height=500,highlightbackground=ap
 cnv.grid(row=0, column=0, pady=(0,50), columnspan=2)
 
 lbl_stopwatch = Label(cnv,
-                    text='00:00,00',
+                    text='00:00:00',
                     font=app_font1,
                     bg=app_bg)
 lbl_stopwatch.grid(row=0, column=0)
