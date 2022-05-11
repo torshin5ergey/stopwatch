@@ -1,5 +1,5 @@
 # Fullscreen stopwatch program with GUI
-# using Tkinter library
+# using Tkinter and Time libraries
 
 # importing the required libraries
 from tkinter import *
@@ -7,28 +7,26 @@ import time
 
 # Create variables
 is_run = False
-minutes, seconds, miliseconds = 0, 0, 0
+start_time = 0
+min, sec, msec = 0, 0, 0
 
 # App fonts and background color
-app_font1 = 'Calibri 200 bold'
-app_font2 = 'Calibri 36'
+app_font_main = 'Calibri 200 bold'
+app_font_additional = 'Calibri 70 bold'
+app_font_buttons = 'Calibri 36'
 app_bg = '#F2F4F3'
-
-# Re-maps a number from one range to another
-def map_values(x, in_min, in_max, out_min, out_max):
-    return (x-in_min) * (out_max-out_min) / (in_max-in_min) + out_min
 
 # Start stopwatch
 def start():
+    global start_time
     print('start')
     global is_run
     is_run = True
+    start_time = time.time()
     update()
     btn_start.grid_forget()
     btn_pause.grid(row=1, column=0)
     btn_reset.configure(state=NORMAL)
-    #btn_start.configure(state=tk.DISABLED)
-    #btn_reset.configure(state=tk.NORMAL)
 
 # Pause stopwatch
 def pause():
@@ -40,40 +38,36 @@ def pause():
 
 # Reset stopwatch
 def reset():
-    global is_run, minutes, seconds, miliseconds
+    global is_run, min, sec, msec
     lbl_stopwatch.after_cancel(update)
-    minutes, seconds, miliseconds = 0, 0, 0
+    min, sec, msec = 0, 0, 0
     lbl_stopwatch.configure(text='00 00')
     lbl_stopwatch_ms.configure(text='00')
     if is_run:
         btn_pause.grid_forget()
-        btn_start.grid(row=1, column=0, pady=10)
+        btn_start.grid(row=1, column=0)
     btn_reset.configure(state=DISABLED)
     is_run = False
 
 # Update stopwatch
 def update():
-    global minutes, seconds, miliseconds
-    #print(running)
+    global min, sec, msec, start_time
     if is_run:
-        if miliseconds > 999:
-            seconds += 1
-            miliseconds = 0
-        if seconds > 59:
-            minutes += 1
-            seconds = 0
-        # Create string valuet for min, sec and ms
-        str_minutes = '0' + str(minutes) if (minutes < 10) else str(minutes)
-        str_seconds = '0' + str(seconds) if (seconds < 10) else str(seconds)
-        str_miliseconds = '0' + str(int(miliseconds/10)) if ((int(miliseconds/10)) < 10) else str(int(miliseconds/10))
-        new_lbl_text = str_minutes + ' ' + str_seconds
-        lbl_stopwatch.configure(text=new_lbl_text)
-        lbl_stopwatch_ms.configure(text=str_miliseconds)
-        # Update every second
-        #time.sleep(0.001)
-        #print(miliseconds/10)
+        cur_time = time.time() - start_time
+        min_sec, msec = format_time(cur_time)
+        lbl_stopwatch.configure(text=min_sec)
+        lbl_stopwatch_ms.configure(text=msec)
+        # Update every 20 miliseconds
         lbl_stopwatch_ms.after(20, update)
-        miliseconds += 20
+
+# Format caclucated time into min, sec, msec
+def format_time(time):
+    min = int(time / 60)
+    sec = int(time - min * 60.0)
+    msec = int((time - min * 60.0 - sec) * 100)
+    # Create string valuet for min, sec and ms
+    msec = '0' + str(msec) if (msec < 10) else str(msec)
+    return '%02d %02d' % (min, sec), msec
 
 # Create 'root' app window
 root = Tk()
@@ -89,18 +83,15 @@ root.configure(bg=app_bg)
 frame_main = Frame(root, bg=app_bg)
 frame_main.grid(row=0, column=0)
 
-lbl_minutes = Label(frame_main,
-                    text='')
-
 lbl_stopwatch = Label(frame_main,
                     text='00 00',
-                    font=app_font1,
+                    font=app_font_main,
                     bg=app_bg)
 lbl_stopwatch.grid(row=0, column=0, pady=50)
 
 lbl_stopwatch_ms = Label(frame_main,
                         text='00',
-                        font='Calibri 70 bold',
+                        font=app_font_additional,
                         bg=app_bg)
 lbl_stopwatch_ms.grid(row=0, column=1, pady=(0, 70))
 
@@ -109,7 +100,7 @@ frame_btns.grid(row=1, column=0, columnspan=2)
 btn_start = Button(frame_btns,
                 text='Start',
                 command=start,
-                font=app_font2,
+                font=app_font_buttons,
                 bg=app_bg,
                 width=7)
 btn_start.grid(row=1, column=0)
@@ -117,7 +108,7 @@ btn_start.grid(row=1, column=0)
 btn_pause = Button(frame_btns,
                 text='Pause',
                 command=pause,
-                font=app_font2,
+                font=app_font_buttons,
                 bg=app_bg,
                 width=7,
                 state=NORMAL)
@@ -125,7 +116,7 @@ btn_pause = Button(frame_btns,
 btn_reset = Button(frame_btns,
                 text='Reset',
                 command=reset,
-                font=app_font2,
+                font=app_font_buttons,
                 bg=app_bg,
                 width=7,
                 state=DISABLED)
