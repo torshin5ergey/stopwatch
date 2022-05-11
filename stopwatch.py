@@ -79,6 +79,7 @@ root.geometry(root_size)
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
 root.configure(bg=app_bg)
+root.iconbitmap('stopwatch.ico')
 
 frame_main = Frame(root, bg=app_bg)
 frame_main.grid(row=0, column=0)
