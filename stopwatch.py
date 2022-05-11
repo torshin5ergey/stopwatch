@@ -3,15 +3,15 @@
 
 # importing the required libraries
 from tkinter import *
-#import time
+import time
 
 # Create variables
 is_run = False
 minutes, seconds, miliseconds = 0, 0, 0
 
 # App fonts and background color
-app_font1 = 'Arial 200 bold'
-app_font2 = 'Arial 36'
+app_font1 = 'Calibri 200 bold'
+app_font2 = 'Calibri 36'
 app_bg = '#F2F4F3'
 
 # Re-maps a number from one range to another
@@ -100,7 +100,7 @@ lbl_stopwatch.grid(row=0, column=0, pady=50)
 
 lbl_stopwatch_ms = Label(frame_main,
                         text='00',
-                        font='Arial 70 bold',
+                        font='Calibri 70 bold',
                         bg=app_bg)
 lbl_stopwatch_ms.grid(row=0, column=1, pady=(0, 70))
 
