@@ -12,12 +12,16 @@ start_time = 0
 min, sec, msec = 0, 0, 0
 
 # App fonts and background color
+# Main digits font
 app_font_main = 'Calibri 200 bold'
+# Miliseconds digits font
 app_font_additional = 'Calibri 70 bold'
+# Microtext font
 app_font_text = 'Calibri 10'
+text_fg = '#C5C5C5'
+# Buttons font
 app_font_buttons = 'Calibri 36'
 app_bg = '#F2F4F3'
-text_fg = '#C5C5C5'
 
 # Start stopwatch
 def start():
@@ -27,6 +31,7 @@ def start():
         start_time = time.time()
     is_run[0],is_run[1] = True, False
     update()
+    # Switch "Start" to "Pause"
     btn_start.grid_forget()
     btn_pause.grid(row=0, column=0)
     btn_reset.configure(state=NORMAL)
@@ -36,6 +41,7 @@ def pause():
     global is_run
     is_run[0] = False
     root.after_cancel(update)
+    # Switch "Pause" to "Start"
     btn_pause.grid_forget()
     btn_start.grid(row=0, column=0)
 
@@ -47,11 +53,12 @@ def reset():
     lbl_stopwatch_min.configure(text='00')
     lbl_stopwatch_sec.configure(text='00')
     lbl_stopwatch_ms.configure(text='00')
+    is_run[0], is_run[1] = False, True
+    # Switch "Pause" to "Start" if it needs
     if is_run[0]:
         btn_pause.grid_forget()
         btn_start.grid(row=0, column=0)
     btn_reset.configure(state=DISABLED)
-    is_run[0], is_run[1] = False, True
 
 # Update stopwatch
 def update():
@@ -71,7 +78,6 @@ def format_time(time):
     sec = int(time - min * 60.0)
     msec = int((time - min * 60.0 - sec) * 100)
     # Create string valuet for min, sec and ms
-    #msec = '0' + str(msec) if (msec < 10) else str(msec)
     return '%02d' % min, '%02d' % sec, '%02d' % msec
 
 # Create 'root' app window
