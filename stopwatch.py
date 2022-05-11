@@ -7,7 +7,7 @@ import time
 
 # Create variables
 # is_run stores two bool values (is timer started, is timer paused)
-is_run = [False, False]
+is_run = [False, True]
 start_time = 0
 min, sec, msec = 0, 0, 0
 
@@ -22,11 +22,10 @@ text_fg = '#C5C5C5'
 # Start stopwatch
 def start():
     global start_time
-    print('start')
     global is_run
-    if is_run[1] == False:
+    if is_run[1]:
         start_time = time.time()
-    is_run[0],is_run[1] = True, True
+    is_run[0],is_run[1] = True, False
     update()
     btn_start.grid_forget()
     btn_pause.grid(row=0, column=0)
@@ -52,7 +51,7 @@ def reset():
         btn_pause.grid_forget()
         btn_start.grid(row=0, column=0)
     btn_reset.configure(state=DISABLED)
-    is_run[0], is_run[1] = False, False
+    is_run[0], is_run[1] = False, True
 
 # Update stopwatch
 def update():
@@ -95,21 +94,21 @@ lbl_text_min = Label(frame_main,
                     font=app_font_text,
                     bg=app_bg,
                     fg=text_fg)
-lbl_text_min.grid(row=0, column=0)
+lbl_text_min.grid(row=0, column=0, sticky=E, padx=(0, 30))
 
 lbl_text_sec = Label(frame_main,
                     text='seconds',
                     font=app_font_text,
                     bg=app_bg,
                     fg=text_fg)
-lbl_text_sec.grid(row=0, column=1)
+lbl_text_sec.grid(row=0, column=1, sticky=E, padx=(0, 20))
 
 lbl_text_ms = Label(frame_main,
                     text='miliseconds',
                     font=app_font_text,
                     bg=app_bg,
                     fg=text_fg)
-lbl_text_ms.grid(row=0, column=2)
+lbl_text_ms.grid(row=0, column=2, sticky=E, padx=(0, 5))
 
 lbl_stopwatch_min = Label(frame_main,
                     text='00',
