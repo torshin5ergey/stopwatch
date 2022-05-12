@@ -9,6 +9,8 @@ import time
 # is_run stores two bool values (is timer started, is timer paused)
 is_run = [False, True]
 start_time = 0
+diff_time = 0
+cur_time = 0
 min, sec, msec = 0, 0, 0
 
 # App fonts and background color
@@ -25,10 +27,11 @@ app_bg = '#F2F4F3'
 
 # Start stopwatch
 def start():
-    global start_time
+    global start_time, diff_time
     global is_run
     if is_run[1]:
-        start_time = time.time()
+        diff_time = 0
+    start_time = time.time()
     is_run[0],is_run[1] = True, False
     update()
     # Switch "Start" to "Pause"
@@ -38,7 +41,8 @@ def start():
 
 # Pause stopwatch
 def pause():
-    global is_run
+    global is_run, diff_time, cur_time
+    diff_time = cur_time
     is_run[0] = False
     root.after_cancel(update)
     # Switch "Pause" to "Start"
@@ -53,18 +57,18 @@ def reset():
     lbl_stopwatch_min.configure(text='00')
     lbl_stopwatch_sec.configure(text='00')
     lbl_stopwatch_ms.configure(text='00')
-    is_run[0], is_run[1] = False, True
     # Switch "Pause" to "Start" if it needs
     if is_run[0]:
         btn_pause.grid_forget()
         btn_start.grid(row=0, column=0)
     btn_reset.configure(state=DISABLED)
+    is_run[0], is_run[1] = False, True
 
 # Update stopwatch
 def update():
-    global min, sec, msec, start_time
+    global min, sec, msec, start_time, cur_time
     if is_run[0]:
-        cur_time = time.time() - start_time
+        cur_time = time.time() - start_time + diff_time
         min, sec, msec = format_time(cur_time)
         lbl_stopwatch_min.configure(text=min)
         lbl_stopwatch_sec.configure(text=sec)
