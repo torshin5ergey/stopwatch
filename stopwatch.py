@@ -3,27 +3,25 @@
 
 # importing the required libraries
 from tkinter import *
-import time
+import time, winreg
 
 # Create variables
-# is_run stores two bool values (is timer started, is timer paused)
-is_run = [False, True]
-start_time = 0
-diff_time = 0
-cur_time = 0
-min, sec, msec = 0, 0, 0
 
-# App fonts and background color
 # Main digits font
 app_font_main = 'Calibri 200 bold'
 # Miliseconds digits font
 app_font_additional = 'Calibri 70 bold'
 # Microtext font
 app_font_text = 'Calibri 10'
-text_fg = '#C5C5C5'
 # Buttons font
 app_font_buttons = 'Calibri 36'
-app_bg = '#F2F4F3'
+
+# is_run stores two bool values (is timer started, is timer paused)
+is_run = [False, True]
+start_time = 0
+diff_time = 0
+cur_time = 0
+min, sec, msec = 0, 0, 0
 
 # Start stopwatch
 def start():
@@ -81,20 +79,54 @@ def format_time(time):
     min = int(time / 60)
     sec = int(time - min * 60.0)
     msec = int((time - min * 60.0 - sec) * 100)
-    # Create string valuet for min, sec and ms
+    # Create string value for min, sec and ms
     return '%02d' % min, '%02d' % sec, '%02d' % msec
+
+# Detect Dark appearance in system. Returns True is Dark mode is set.
+def detect_darkmode(): 
+    # The relevant registry key is searched, if not found, it is assumed that dark mode is not enabled
+    registry = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
+    reg_keypath = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize'
+    try:
+        reg_key = winreg.OpenKey(registry, reg_keypath)
+    except FileNotFoundError:
+        return False
+
+    for i in range(1024):
+        try:
+            value_name, value, _ = winreg.EnumValue(reg_key, i)
+            # If the registry key is present and the value is set to 0, dark mode is set
+            if value_name == 'AppsUseLightTheme':
+                return value == 0
+        except OSError:
+            break
+    return False
+
+# App fonts and background color
+def app_appearance():
+    global app_bg, microtext_fg, maintext_fg
+    if detect_darkmode():
+        app_bg = '#252525'
+        microtext_fg = '#555555' 
+        maintext_fg = '#DADADA'
+    else:
+        app_bg = '#F2F4F3'
+        microtext_fg = '#C5C5C5'
+        maintext_fg = '#080808'
 
 # Create 'root' app window
 root = Tk()
 root.title('Stopwatch')
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
-root_size = str(screen_width) + 'x' + str(screen_height)
+root_size = str(screen_width-150) + 'x' + str(screen_height-150)
 root.geometry(root_size)
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
-root.configure(bg=app_bg)
 root.iconbitmap('stopwatch.ico')
+
+app_appearance()
+root.configure(bg=app_bg)
 
 frame_main = Frame(root, bg=app_bg)
 frame_main.grid(row=0, column=0)
@@ -103,39 +135,42 @@ lbl_text_min = Label(frame_main,
                     text='minutes',
                     font=app_font_text,
                     bg=app_bg,
-                    fg=text_fg)
-lbl_text_min.grid(row=0, column=0, sticky=E, padx=(0, 30))
+                    fg=microtext_fg)
+lbl_text_min.grid(row=0, column=0, sticky=E, padx=(0, 50))
 
 lbl_text_sec = Label(frame_main,
                     text='seconds',
                     font=app_font_text,
                     bg=app_bg,
-                    fg=text_fg)
-lbl_text_sec.grid(row=0, column=1, sticky=E, padx=(0, 20))
+                    fg=microtext_fg)
+lbl_text_sec.grid(row=0, column=1, sticky=E, padx=(0, 50))
 
 lbl_text_ms = Label(frame_main,
                     text='miliseconds',
                     font=app_font_text,
                     bg=app_bg,
-                    fg=text_fg)
+                    fg=microtext_fg)
 lbl_text_ms.grid(row=0, column=2, sticky=E, padx=(0, 5))
 
 lbl_stopwatch_min = Label(frame_main,
                     text='00',
                     font=app_font_main,
-                    bg=app_bg)
-lbl_stopwatch_min.grid(row=1, column=0, padx=(0,20))
+                    bg=app_bg,
+                    fg=maintext_fg)
+lbl_stopwatch_min.grid(row=1, column=0, padx=(0,30))
 
 lbl_stopwatch_sec = Label(frame_main,
                     text='00',
                     font=app_font_main,
-                    bg=app_bg)
-lbl_stopwatch_sec.grid(row=1, column=1, pady=0)
+                    bg=app_bg,
+                    fg=maintext_fg)
+lbl_stopwatch_sec.grid(row=1, column=1, pady=0, padx=(0,30))
 
 lbl_stopwatch_ms = Label(frame_main,
                         text='00',
                         font=app_font_additional,
-                        bg=app_bg)
+                        bg=app_bg,
+                        fg=maintext_fg)
 lbl_stopwatch_ms.grid(row=1, column=2, pady=(0, 70))
 
 frame_btns = Frame(frame_main, bg=app_bg)
@@ -145,6 +180,7 @@ btn_start = Button(frame_btns,
                 command=start,
                 font=app_font_buttons,
                 bg=app_bg,
+                fg=maintext_fg,
                 width=7)
 btn_start.grid(row=0, column=0)
 
@@ -153,6 +189,7 @@ btn_pause = Button(frame_btns,
                 command=pause,
                 font=app_font_buttons,
                 bg=app_bg,
+                fg=maintext_fg,
                 width=7,
                 state=NORMAL)
 
@@ -161,6 +198,7 @@ btn_reset = Button(frame_btns,
                 command=reset,
                 font=app_font_buttons,
                 bg=app_bg,
+                fg=maintext_fg,
                 width=7,
                 state=DISABLED)
 btn_reset.grid(row=0, column=1, padx=50)
