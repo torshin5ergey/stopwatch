@@ -3,7 +3,7 @@
 
 # importing the required libraries
 from tkinter import *
-import time, winreg
+import time, darkdetect
 
 # Create variables
 
@@ -82,30 +82,11 @@ def format_time(time):
     # Create string value for min, sec and ms
     return '%02d' % min, '%02d' % sec, '%02d' % msec
 
-# Detect Dark appearance in system. Returns True is Dark mode is set.
-def detect_darkmode(): 
-    # The relevant registry key is searched, if not found, it is assumed that dark mode is not enabled
-    registry = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
-    reg_keypath = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize'
-    try:
-        reg_key = winreg.OpenKey(registry, reg_keypath)
-    except FileNotFoundError:
-        return False
-
-    for i in range(1024):
-        try:
-            value_name, value, _ = winreg.EnumValue(reg_key, i)
-            # If the registry key is present and the value is set to 0, dark mode is set
-            if value_name == 'AppsUseLightTheme':
-                return value == 0
-        except OSError:
-            break
-    return False
-
 # App fonts and background color
 def app_appearance():
     global app_bg, microtext_fg, maintext_fg
-    if detect_darkmode():
+    # Detect Dark appearance in system
+    if darkdetect.theme() == 'Dark':
         app_bg = '#252525'
         microtext_fg = '#555555' 
         maintext_fg = '#DADADA'
@@ -113,20 +94,21 @@ def app_appearance():
         app_bg = '#F2F4F3'
         microtext_fg = '#C5C5C5'
         maintext_fg = '#080808'
+    root.configure(bg=app_bg)
 
 # Create 'root' app window
 root = Tk()
 root.title('Stopwatch')
-screen_width = root.winfo_screenwidth()
-screen_height = root.winfo_screenheight()
-root_size = str(screen_width-150) + 'x' + str(screen_height-150)
-root.geometry(root_size)
+screen_width = root.winfo_screenwidth() - 100
+screen_height = root.winfo_screenheight() - 100
+root.geometry("%dx%d+%d+%d" % (screen_width, screen_height, 0, 0))
+root.minsize(800, 600)
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
 root.iconbitmap('stopwatch.ico')
 
+# Set window appearance
 app_appearance()
-root.configure(bg=app_bg)
 
 frame_main = Frame(root, bg=app_bg)
 frame_main.grid(row=0, column=0)
@@ -181,7 +163,9 @@ btn_start = Button(frame_btns,
                 font=app_font_buttons,
                 bg=app_bg,
                 fg=maintext_fg,
-                width=7)
+                width=7,
+                activebackground='#505050',
+                activeforeground=maintext_fg)
 btn_start.grid(row=0, column=0)
 
 btn_pause = Button(frame_btns,
@@ -191,7 +175,9 @@ btn_pause = Button(frame_btns,
                 bg=app_bg,
                 fg=maintext_fg,
                 width=7,
-                state=NORMAL)
+                state=NORMAL,
+                activebackground='#505050',
+                activeforeground=maintext_fg)
 
 btn_reset = Button(frame_btns,
                 text='Reset',
@@ -200,7 +186,9 @@ btn_reset = Button(frame_btns,
                 bg=app_bg,
                 fg=maintext_fg,
                 width=7,
-                state=DISABLED)
+                state=DISABLED,
+                activebackground='#282828',
+                activeforeground=maintext_fg)
 btn_reset.grid(row=0, column=1, padx=50)
 
 root.mainloop()
