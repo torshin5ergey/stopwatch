@@ -102,10 +102,11 @@ root.title('Stopwatch')
 screen_width = root.winfo_screenwidth() - 100
 screen_height = root.winfo_screenheight() - 100
 root.geometry("%dx%d+%d+%d" % (screen_width, screen_height, 0, 0))
-root.minsize(800, 600)
+root.minsize(800, 600) 
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
-root.iconbitmap('stopwatch.ico')
+icon = PhotoImage(file = 'stopwatch.png')
+root.iconphoto(False, icon)
 
 # Set window appearance
 app_appearance()
