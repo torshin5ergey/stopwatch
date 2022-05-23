@@ -9,3 +9,7 @@ Also the app supports **Light** and **Dark** interface styles. App appearance de
 ## Attributions
 
 [darkdetect](https://github.com/albertosottile/darkdetect) by [albertosottile](https://github.com/albertosottile)
+
+## License
+
+GPL-3.0 license
