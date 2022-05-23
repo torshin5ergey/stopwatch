@@ -76,9 +76,9 @@ def update():
 
 # Format caclucated time into min, sec, msec
 def format_time(time):
-    min = 0#int(time / 60)
-    sec = 15#int(time - min * 60.0)
-    msec = 25#int((time - min * 60.0 - sec) * 100)
+    min = int(time / 60)
+    sec = int(time - min * 60.0)
+    msec = int((time - min * 60.0 - sec) * 100)
     # Create string value for min, sec and ms
     return '%02d' % min, '%02d' % sec, '%02d' % msec
 
