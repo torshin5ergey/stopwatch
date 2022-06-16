@@ -18,7 +18,7 @@ Stopwatch is created using the Python (v3.9.1) programming language and the foll
 
 ## Requirements
 
-- Windows 10 1607+/macOS 10.14+
+- Windows 10 1607+/macOS 10.14+/Linux with a dark GTK theme
 - Python 3.9.1
 - darkdetect 0.6.0
 
