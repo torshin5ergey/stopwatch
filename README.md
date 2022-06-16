@@ -25,7 +25,7 @@ Stopwatch is created using the Python (v3.9.1) programming language and the foll
 ## Attributions
 
 All covers has been designed using images from [Freepik.com](https://www.freepik.com/)
-[darkdetect](https://github.com/albertosottile/darkdetect) by [albertosottile](https://github.com/albertosottile)
+[darkdetect](https://github.com/albertosottile/darkdetect) by [albertosottile](https://github.com/albertosottile)  
 [Mac screen psd](https://www.freepik.com/free-psd/minimalist-dual-pc-desktop-screen-mockup_17675010.htm#query=mac%20screen&position=0&from_view=keyword) created by [user16289356](https://www.freepik.com/author/user16289356)
 
 ---
