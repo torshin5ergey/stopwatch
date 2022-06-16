@@ -10,6 +10,8 @@ Also the app supports **Light** and **Dark** interface styles. App appearance de
 
 ## Demo
 
+![Stopwatch, Windows, Light mode demo](assets/demo1.gif)
+
 ## Other
 
 Stopwatch is created using the Python (v3.9.1) programming language and the following libraries: tkinter, time, darkdetect.
