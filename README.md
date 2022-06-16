@@ -1,3 +1,5 @@
+![Stopwatch, Windows, Dark/Light modes](assets/cover_transparent.png)
+
 # Stopwatch
 
 Stopwatch is a free easy and simple app for desktop (Windows, macOS, Linux) that will help you to measure time. It has three functions as shown below:
